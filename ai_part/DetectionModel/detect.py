@@ -1,4 +1,5 @@
 #python detect.py --device cpu --weights runs/train/yolor_p6.pt --names data/test_newconn.names
+#rec\scripts\activate.bat
 
 import argparse
 import os
@@ -26,7 +27,7 @@ from utils.general import *
 
 def load_classes(path):
     # Loads *.names file at 'path'
-    with open(path, 'r') as f:
+    with open(path, 'r', encoding='utf-8') as f:
         names = f.read().split('\n')
     return list(filter(None, names))  # filter removes empty strings (such as last line)
 
@@ -34,6 +35,8 @@ def detect(save_img=False):
     out, source, weights, view_img, save_txt, imgsz, cfg, names = \
         opt.output, opt.source, opt.weights, opt.view_img, opt.save_txt, opt.img_size, opt.cfg, opt.names
     webcam = source == '0' or source.startswith('rtsp') or source.startswith('http') or source.endswith('.txt')
+
+    detected_labels = []
 
     # Initialize
     device = select_device(opt.device)
@@ -117,6 +120,7 @@ def detect(save_img=False):
 
                 # Write results
                 for *xyxy, conf, cls in det:
+                    detected_labels.append(names[int(cls)])
                     if save_txt:  # Write to file
                         xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
                         with open(txt_path + '.txt', 'a') as f:
@@ -158,6 +162,7 @@ def detect(save_img=False):
             os.system('open ' + save_path)
 
     print('Done. (%.3fs)' % (time.time() - t0))
+    return detected_labels
 
 
 if __name__ == '__main__':
@@ -183,7 +188,10 @@ if __name__ == '__main__':
     with torch.no_grad():
         if opt.update:  # update all models (to fix SourceChangeWarning)
             for opt.weights in ['']:
-                detect()
+                labels = detect()
+                print("최종 라벨 리스트:",labels)
+                
                 strip_optimizer(opt.weights)
         else:
-            detect()
+            labels = detect()
+            print("최종 라벨 리스트:",labels)
