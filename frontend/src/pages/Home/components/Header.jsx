@@ -1,6 +1,16 @@
 import React from "react";
 
-const Header = () => {
+const Header = ({ onOpenGuide }) => {
+  const handleGuideClick = (e) => {
+    e.preventDefault();
+    onOpenGuide?.();
+  };
+
+  const handleHomeClick = (e) => {
+    e.preventDefault();
+    window.location.reload();
+  };
+
   return (
     <header className="header">
       <div className="header-content">
@@ -11,14 +21,15 @@ const Header = () => {
               <path d="M15 15 L25 20 L15 25 Z" fill="#4CAF50" />
             </svg>
           </div>
-          <span className="logo-text">쓱 ~ 분리</span>
         </div>
 
+        <div className="header-title">쓱 ~ 분리</div>
+
         <nav className="navigation">
-          <a href="#" className="nav-link">
+          <a href="#" className="nav-link" onClick={handleHomeClick}>
             홈
           </a>
-          <a href="#" className="nav-link">
+          <a href="#" className="nav-link" onClick={handleGuideClick}>
             가이드
           </a>
           <a href="#" className="nav-link">

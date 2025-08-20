@@ -21,6 +21,21 @@
   padding: 0 20px;
 }
 
+/* Centered header title */
+.header-content {
+  position: relative;
+}
+.header-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 700;
+  pointer-events: none; /* allow clicks to pass to nav/links */
+}
+
 .logo {
   display: flex;
   align-items: center;
@@ -287,6 +302,97 @@
   padding-left: 0;
 }
 
+/* 결과 화면 (검색 결과) */
+.search-result {
+  margin-top: 20px;
+}
+
+.result-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333333;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.result-preview {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.preview-box {
+  width: 100%;
+  max-width: 600px;
+  height: 260px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fafafa;
+}
+
+.preview-placeholder {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.loading {
+  text-align: center;
+  color: #6b7280;
+  margin-top: 10px;
+}
+
+.result-details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.section-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px 18px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 10px;
+}
+
+.section-content {
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.category-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #4caf50;
+}
+
+.bullet-list {
+  list-style: disc inside;
+}
+
+.bullet-list li {
+  margin-bottom: 6px;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 1199px) {
   .header {
@@ -337,5 +443,273 @@
 
   .share-btn {
     margin-left: 0;
+  }
+  .result-details {
+    grid-template-columns: 1fr;
+  }
+  .preview-box {
+    height: 200px;
+  }
+}
+
+/* 검색 입력 래퍼: 에러 문구를 입력 바로 아래에 표시 */
+.search-input-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 검색 에러 상태 */
+.search-input.error {
+  border-color: #ef4444; /* red-500 */
+}
+
+/* 흔들림 애니메이션 */
+.search-input.shake {
+  animation: input-shake 0.4s ease;
+}
+
+@keyframes input-shake {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* 인라인 에러 텍스트: 입력 바로 하단 */
+.error-text.inline {
+  margin-top: 6px;
+  color: #ef4444;
+  font-size: 12px;
+  text-align: left;
+}
+
+/* 모달 오버레이 */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+/* 모달 본문 */
+.modal {
+  width: 100%;
+  max-width: 840px;
+  max-height: 80vh;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #333333;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.modal-body {
+  padding: 16px 20px 20px;
+  overflow-y: auto;
+}
+
+.guide-section {
+  margin-bottom: 18px;
+}
+
+.guide-section h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.number-list {
+  list-style: decimal inside;
+  color: #4b5563;
+}
+
+.faq-item {
+  margin-bottom: 10px;
+}
+
+.faq-item .q {
+  font-weight: 600;
+  color: #374151;
+}
+
+.faq-item .a {
+  color: #4b5563;
+}
+
+.last-updated {
+  margin-top: 8px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+/* 모달 반응형 */
+@media (max-width: 767px) {
+  .modal {
+    max-width: 100%;
+    max-height: 90vh;
+  }
+}
+
+/* 헤더 내 가이드 버튼을 링크처럼 */
+.link-button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+/* Guide hero */
+.guide-hero {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+  border: 1px solid #dcedc8;
+  margin-bottom: 16px;
+}
+.hero-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #c8e6c9;
+}
+.hero-text .pill-badges {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 999px;
+  background: #a5d6a7;
+  color: #1b5e20;
+  border: 1px solid #81c784;
+}
+.badge-alt {
+  background: #b3e5fc;
+  color: #0d47a1;
+  border-color: #81d4fa;
+}
+.hero-title {
+  margin: 0;
+  font-size: 18px;
+  color: #1b5e20;
+  font-weight: 700;
+}
+.hero-subtitle {
+  margin: 2px 0 0;
+  color: #33691e;
+  font-size: 13px;
+}
+
+/* Guide grid */
+.guide-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.guide-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.guide-card.full {
+  grid-column: 1 / -1;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.card-icon {
+  font-size: 18px;
+}
+
+.callout {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px dashed #81c784;
+  background: #f1f8e9;
+  color: #33691e;
+  font-size: 13px;
+}
+.callout.tip:before {
+  content: "TIP";
+  font-weight: 700;
+  margin-right: 6px;
+  color: #1b5e20;
+}
+
+/* FAQ */
+.faq-item {
+  margin-bottom: 8px;
+}
+.faq-item .q {
+  font-weight: 600;
+  color: #374151;
+}
+.faq-item .a {
+  color: #4b5563;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .guide-grid {
+    grid-template-columns: 1fr;
   }
 }
