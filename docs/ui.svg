@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 그라데이션 정의 -->
+    <linearGradient id="headerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#45a049;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="uploadGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8f9fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e9ecef;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="buttonGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 그림자 필터 -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.1"/>
+    </filter>
+    
+    <!-- 둥근 모서리 필터 -->
+    <filter id="rounded" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
+    </filter>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="1200" height="800" fill="#F5F5F5"/>
+  
+  <!-- 헤더 -->
+  <rect x="200" y="0" width="800" height="80" fill="url(#headerGradient)" filter="url(#shadow)"/>
+  
+  <!-- 로고 -->
+  <circle cx="240" cy="40" r="20" fill="#ffffff"/>
+  <path d="M230 30 L250 40 L230 50 Z" fill="#4CAF50"/>
+  <text x="280" y="50" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#ffffff">EcoSort AI</text>
+  
+  <!-- 네비게이션 메뉴 -->
+  <text x="600" y="50" font-family="Arial, sans-serif" font-size="16" fill="#ffffff" text-anchor="middle">홈</text>
+  <text x="700" y="50" font-family="Arial, sans-serif" font-size="16" fill="#ffffff" text-anchor="middle">가이드</text>
+  <text x="800" y="50" font-family="Arial, sans-serif" font-size="16" fill="#ffffff" text-anchor="middle">팁</text>
+  <text x="900" y="50" font-family="Arial, sans-serif" font-size="16" fill="#ffffff" text-anchor="middle">정보</text>
+  
+  <!-- 메인 콘텐츠 영역 -->
+  <g transform="translate(200, 120)">
+    
+    <!-- 히어로 섹션 -->
+    <text x="400" y="40" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#333333" text-anchor="middle">AI로 쉽게 분리수거하세요</text>
+    <text x="400" y="70" font-family="Arial, sans-serif" font-size="18" fill="#666666" text-anchor="middle">이미지를 업로드하고 즉시 확인하세요</text>
+    
+    <!-- 업로드 영역 -->
+    <rect x="50" y="120" width="700" height="200" rx="15" fill="url(#uploadGradient)" stroke="#4CAF50" stroke-width="2" stroke-dasharray="5,5" filter="url(#shadow)"/>
+    
+    <!-- 업로드 아이콘 -->
+    <circle cx="400" cy="200" r="30" fill="#4CAF50" opacity="0.2"/>
+    <path d="M390 190 L410 200 L390 210 M400 190 L400 210" stroke="#4CAF50" stroke-width="3" fill="none"/>
+    
+    <!-- 업로드 텍스트 -->
+    <text x="400" y="250" font-family="Arial, sans-serif" font-size="18" fill="#333333" text-anchor="middle">이미지를 업로드하거나 드래그하세요</text>
+    <text x="400" y="280" font-family="Arial, sans-serif" font-size="14" fill="#666666" text-anchor="middle">지원 형식: JPG, PNG, JPEG, WEBP</text>
+    
+    <!-- 파일 선택 버튼 -->
+    <rect x="350" y="300" width="100" height="40" rx="20" fill="url(#buttonGradient)" filter="url(#shadow)"/>
+    <text x="400" y="325" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">파일 선택</text>
+    
+    <!-- 검색 영역 -->
+    <g transform="translate(0, 360)">
+      <text x="400" y="30" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#333333" text-anchor="middle">또는 검색으로 찾기</text>
+      
+      <!-- 검색창 -->
+      <rect x="200" y="50" width="400" height="50" rx="25" fill="#ffffff" stroke="#4CAF50" stroke-width="2" filter="url(#shadow)"/>
+      <text x="230" y="80" font-family="Arial, sans-serif" font-size="16" fill="#999999">분리수거 방법을 검색하세요</text>
+      
+      <!-- 검색 버튼 -->
+      <rect x="620" y="50" width="80" height="50" rx="25" fill="url(#buttonGradient)" filter="url(#shadow)"/>
+      <text x="660" y="80" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">검색</text>
+      
+      <!-- 인기 검색어 -->
+      <text x="400" y="130" font-family="Arial, sans-serif" font-size="14" fill="#666666" text-anchor="middle">인기 검색어:</text>
+      
+      <!-- 태그들 -->
+      <rect x="250" y="140" width="60" height="30" rx="15" fill="#E8F5E8" stroke="#4CAF50" stroke-width="1"/>
+      <text x="280" y="160" font-family="Arial, sans-serif" font-size="12" fill="#4CAF50" text-anchor="middle">플라스틱</text>
+      
+      <rect x="320" y="140" width="50" height="30" rx="15" fill="#E8F5E8" stroke="#4CAF50" stroke-width="1"/>
+      <text x="345" y="160" font-family="Arial, sans-serif" font-size="12" fill="#4CAF50" text-anchor="middle">유리</text>
+      
+      <rect x="380" y="140" width="50" height="30" rx="15" fill="#E8F5E8" stroke="#4CAF50" stroke-width="1"/>
+      <text x="405" y="160" font-family="Arial, sans-serif" font-size="12" fill="#4CAF50" text-anchor="middle">종이</text>
+      
+      <rect x="440" y="140" width="60" height="30" rx="15" fill="#E8F5E8" stroke="#4CAF50" stroke-width="1"/>
+      <text x="470" y="160" font-family="Arial, sans-serif" font-size="12" fill="#4CAF50" text-anchor="middle">음식물</text>
+    </g>
+    
+    <!-- 결과 영역 (예시) -->
+    <g transform="translate(0, 520)" opacity="0.7">
+      <text x="400" y="30" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#333333" text-anchor="middle">분석 결과</text>
+      
+      <!-- 결과 카드 -->
+      <rect x="200" y="50" width="400" height="150" rx="15" fill="#ffffff" filter="url(#shadow)"/>
+      
+      <!-- 분류 결과 -->
+      <rect x="220" y="70" width="80" height="30" rx="15" fill="#4CAF50"/>
+      <text x="260" y="90" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">재활용품</text>
+      
+      <!-- 신뢰도 -->
+      <text x="320" y="90" font-family="Arial, sans-serif" font-size="14" fill="#666666">신뢰도: 95%</text>
+      
+      <!-- 가이드 -->
+      <text x="220" y="120" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#333333">분리수거 방법:</text>
+      <text x="220" y="140" font-family="Arial, sans-serif" font-size="12" fill="#666666">1. 내용물을 비우고 헹구기</text>
+      <text x="220" y="155" font-family="Arial, sans-serif" font-size="12" fill="#666666">2. 라벨 제거</text>
+      <text x="220" y="170" font-family="Arial, sans-serif" font-size="12" fill="#666666">3. 재활용품 수거함에 배출</text>
+      
+      <!-- 공유 버튼 -->
+      <rect x="520" y="70" width="60" height="30" rx="15" fill="#2196F3"/>
+      <text x="550" y="90" font-family="Arial, sans-serif" font-size="12" fill="#ffffff" text-anchor="middle">공유</text>
+    </g>
+  </g>
+  
+  <!-- 반응형 브레이크포인트 표시 (개발용) -->
+  <g opacity="0.3">
+    <!-- 데스크톱 영역 -->
+    <rect x="200" y="0" width="800" height="800" fill="none" stroke="#FF0000" stroke-width="2" stroke-dasharray="5,5"/>
+    <text x="600" y="790" font-family="Arial, sans-serif" font-size="12" fill="#FF0000" text-anchor="middle">Desktop (1200px+)</text>
+    
+    <!-- 태블릿 영역 -->
+    <rect x="300" y="0" width="600" height="800" fill="none" stroke="#00FF00" stroke-width="2" stroke-dasharray="5,5"/>
+    <text x="600" y="770" font-family="Arial, sans-serif" font-size="12" fill="#00FF00" text-anchor="middle">Tablet (768px-1199px)</text>
+    
+    <!-- 모바일 영역 -->
+    <rect x="400" y="0" width="400" height="800" fill="none" stroke="#0000FF" stroke-width="2" stroke-dasharray="5,5"/>
+    <text x="600" y="750" font-family="Arial, sans-serif" font-size="12" fill="#0000FF" text-anchor="middle">Mobile (320px-767px)</text>
+  </g>
+  
+  <!-- 환경 친화적 아이콘들 -->
+  <g opacity="0.1">
+    <!-- 재활용 아이콘 -->
+    <circle cx="100" cy="100" r="15" fill="#4CAF50"/>
+    <path d="M85 85 L115 115 M115 85 L85 115" stroke="#ffffff" stroke-width="2"/>
+    
+    <!-- 나무 아이콘 -->
+    <circle cx="1100" cy="150" r="20" fill="#4CAF50"/>
+    <path d="M1100 130 L1080 150 L1120 150 Z" fill="#4CAF50"/>
+    
+    <!-- 태양 아이콘 -->
+    <circle cx="1050" cy="300" r="15" fill="#FFD700"/>
+    <path d="M1035 300 L1065 300 M1050 285 L1050 315 M1040 290 L1060 310 M1040 310 L1060 290" stroke="#FFD700" stroke-width="2"/>
+  </g>
+</svg>
