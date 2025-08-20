@@ -1,7 +1,7 @@
 can_steel
-can_aluminium
+can_aluminum
 paper
-PET_transparent
+PET_clear
 PET_color
 plastic_PE
 plastic_PP
@@ -10,6 +10,6 @@ styrofoam
 plastic_bag
 glass_brown
 glass_green
-glass_transparent
+glass_clear
 battery
 light
