@@ -50,7 +50,7 @@ const UploadArea = ({ onImageUpload, isLoading }) => {
         onDrop={handleDrop}
       >
         <div className="upload-icon">
-          <svg width="60" height="60" viewBox="0 0 60 60">
+          {/* <svg width="60" height="60" viewBox="0 0 60 60">
             <circle cx="30" cy="30" r="30" fill="#4CAF50" opacity="0.2" />
             <path
               d="M25 25 L35 30 L25 35 M30 25 L30 35"
@@ -58,7 +58,7 @@ const UploadArea = ({ onImageUpload, isLoading }) => {
               strokeWidth="3"
               fill="none"
             />
-          </svg>
+          </svg> */}
         </div>
 
         <p className="upload-text">이미지를 업로드하거나 드래그하세요</p>
