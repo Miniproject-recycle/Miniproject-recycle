@@ -35,7 +35,7 @@ const SearchSection = ({ onSearch }) => {
 
   return (
     <div className="search-section">
-      <h2>또는 검색으로 찾기</h2>
+      
 
       <form className="search-form" onSubmit={handleSearch}>
         <div className="search-input-container">
@@ -64,8 +64,8 @@ const SearchSection = ({ onSearch }) => {
       </form>
 
       <div className="popular-tags">
-        <p>인기 검색어:</p>
-        <div className="tags">
+        {/* <p>인기 검색어:</p> */}
+        {/* <div className="tags">
           {popularTags.map((tag, index) => (
             <button
               key={index}
@@ -76,7 +76,7 @@ const SearchSection = ({ onSearch }) => {
               {tag}
             </button>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );
