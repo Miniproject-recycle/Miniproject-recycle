@@ -212,12 +212,53 @@ const Home = () => {
       <main className="main-content">
         <div className="hero-section">
           <h1>AI로 쉽게 분리수거하세요</h1>
-          <p>이미지를 업로드하고 즉시 확인하세요</p>
+          {/* <p>이미지를 업로드하고 즉시 확인하세요</p> */}
         </div>
 
+        <SearchSection onSearch={handleSearch} />
         <UploadArea onImageUpload={handleImageUpload} isLoading={isLoading} />
 
-        <SearchSection onSearch={handleSearch} />
+        <div
+          className="search-title"
+          style={{ fontSize: "24px", fontWeight: "bold", textAlign: "center" }}
+        >
+          최근 검색한 쓰레기
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "15px",
+            marginTop: "20px",
+            flexWrap: "nowrap",
+          }}
+        >
+          <img
+            src="/images/bottle.png"
+            alt="플라스틱"
+            style={{ width: "180px", height: "180px", objectFit: "cover" }}
+          />
+          <img
+            src="/images/can.png"
+            alt="종이"
+            style={{ width: "180px", height: "180px", objectFit: "cover" }}
+          />
+          <img
+            src="/images/plastic.png"
+            alt="유리"
+            style={{ width: "180px", height: "180px", objectFit: "cover" }}
+          />
+          <img
+            src="/images/plasticBottle.png"
+            alt="금속"
+            style={{ width: "180px", height: "180px", objectFit: "cover" }}
+          />
+          <img
+            src="/images/styrofoam.png"
+            alt="음식물"
+            style={{ width: "180px", height: "180px", objectFit: "cover" }}
+          />
+        </div>
       </main>
 
       <GuideModal open={isGuideOpen} onClose={() => setIsGuideOpen(false)} />
