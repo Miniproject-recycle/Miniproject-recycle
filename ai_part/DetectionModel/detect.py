@@ -13,7 +13,7 @@ import torch
 import torch.backends.cudnn as cudnn
 from numpy import random
 
-from utils.google_utils import attempt_load
+from .utils.google_utils import attempt_load
 from utils.datasets import LoadStreams, LoadImages
 from utils.general import (
     check_img_size,
@@ -31,13 +31,19 @@ from utils.datasets import *
 from utils.general import *
 
 
-# FastAPI용 기본 설정 함수
+# FastAPI용 기본 설정 함수 수정 (35-54번째 줄)
 def create_default_opt():
+    import os
+    from pathlib import Path
+
+    # 현재 파일의 디렉토리 기준으로 절대 경로 생성
+    current_dir = Path(__file__).parent
+
     class DefaultOpt:
         def __init__(self):
-            self.weights = ["runs/train/yolor_p6.pt"]
+            self.weights = [str(current_dir / "runs/train/yolor_p6.pt")]
             self.source = "temp_uploads"
-            self.output = "inference/output"
+            self.output = str(current_dir / "inference/output")
             self.img_size = 1280
             self.conf_thres = 0.4
             self.iou_thres = 0.5
@@ -48,8 +54,10 @@ def create_default_opt():
             self.agnostic_nms = False
             self.augment = False
             self.update = False
-            self.cfg = "cfg/yolor_p6.cfg"
-            self.names = "data/test_newconn.names"
+            self.cfg = str(Path(__file__).parent / "cfg/yolor_p6.cfg")  # 절대 경로
+            self.names = str(
+                Path(__file__).parent / "data/test_newconn.names"
+            )  # 절대 경로
 
     return DefaultOpt()
 
@@ -67,33 +75,17 @@ def load_classes(path):
 
 
 def detect(save_img=False):
-    # opt가 없으면 기본값 생성
-    if "opt" not in globals():
-        import argparse
+    # 중복된 opt 생성 로직 제거 (71-85번째 줄 삭제)
 
-        parser = argparse.ArgumentParser()
-        # 기본값들로 parser 설정
-        parser.add_argument(
-            "--weights", default=["ai_part/DetectionModel/runs/train/yolor_p6.pt"]
-        )
-        parser.add_argument("--source", default="temp_uploads")  # ← 업로드 폴더로 설정
-        parser.add_argument("--output", default="inference/output")
-        parser.add_argument("--img-size", default=1280)
-        parser.add_argument("--conf-thres", default=0.4)
-        # ... 기타 설정들
-        global opt
-        opt = parser.parse_args([])  # 빈 리스트로 기본값 사용
-
-    # 42~50번째 줄: opt에서 필요한 값들을 추출
     out, source, weights, view_img, save_txt, imgsz, cfg, names = (
-        opt.output,  # 출력 디렉토리
-        opt.source,  # 입력 소스 ← 🔥 여기가 핵심!
-        opt.weights,  # 모델 가중치
-        opt.view_img,  # 이미지 표시 여부
-        opt.save_txt,  # 텍스트 저장 여부
-        opt.img_size,  # 이미지 크기
-        opt.cfg,  # 설정 파일
-        opt.names,  # 클래스 이름 파일
+        opt.output,
+        opt.source,  # 프론트엔드에서 업데이트된 경로 사용
+        opt.weights,
+        opt.view_img,
+        opt.save_txt,
+        opt.img_size,
+        opt.cfg,
+        opt.names,
     )
     webcam = (
         source == "0"
@@ -107,8 +99,12 @@ def detect(save_img=False):
     # Initialize
     device = select_device(opt.device)
     if os.path.exists(out):
-        shutil.rmtree(out)  # delete output folder
-    os.makedirs(out)  # make new output folder
+        try:
+            shutil.rmtree(out)  # delete output folder
+        except PermissionError:
+            print(f"Warning: 폴더 삭제 권한 없음. 기존 폴더 유지: {out}")
+            pass  # 폴더 삭제 실패해도 계속 진행
+    os.makedirs(out, exist_ok=True)  # make new output folder (exist_ok=True 추가)
     half = device.type != "cpu"  # half precision only supported on CUDA
 
     # Load model

@@ -21,3 +21,5 @@ pyyaml
 pandas
 seaborn
 scipy
+fastapi
+python-multipart
