@@ -22,4 +22,6 @@ pandas
 seaborn
 scipy
 fastapi
+google-generativeai
 python-multipart
+python-dotenv
