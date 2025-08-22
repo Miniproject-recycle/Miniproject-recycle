@@ -5,7 +5,9 @@ const SearchSection = ({ onSearch }) => {
   const [error, setError] = useState("");
   const [shake, setShake] = useState(false);
 
-  const popularTags = ["플라스틱", "유리", "종이", "음식물"];
+
+  // const popularTags = ["플라스틱", "유리", "종이", "음식물"];
+
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -57,7 +59,9 @@ const SearchSection = ({ onSearch }) => {
               </p>
             )}
           </div>
-          <button ontype="submit" className="search-btn">
+
+          <button type="submit" className="search-btn">
+
             검색
           </button>
         </div>

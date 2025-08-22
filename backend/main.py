@@ -50,11 +50,35 @@ async def vlm_guide_text(
     프론트가 텍스트만 보낼 때 사용.
     - 분류/탐지 없이 라벨 텍스트만으로 분리수거 가이드 생성.
     """
-    result = generate_recycling_guide_text_only(label)
-    if not result.get("ok"):
-        # 내부에서 에러가 났으면 500으로 올려서 프론트에서 에러 처리하기 쉽게 함
-        raise HTTPException(status_code=500, detail=result)
-    return result
+
+    try:
+        result = generate_recycling_guide_text_only(label)
+        if result.get("ok"):
+            # 프론트엔드 형식에 맞게 응답 변환
+            return {
+                "ok": True,
+                "label": label,
+                "guide": result.get("guide_markdown"),  # guide_markdown을 guide로 변환
+                "model": result.get("model"),
+                "meta": result.get("meta")
+            }
+        else:
+            # VLM 에러 시
+            return {
+                "ok": False,
+                "label": label,
+                "guide": None,
+                "error": result.get("error"),
+                "message": result.get("message")
+            }
+    except Exception as e:
+        return {
+            "ok": False,
+            "label": label,
+            "guide": None,
+            "error": "GENERAL_ERROR",
+            "message": f"텍스트 검색 중 오류: {str(e)}"
+        }
 
 
 # B) 이미지만 들어오는 경우 → 객체 감지 실행 & 라벨 반환 함수
@@ -98,8 +122,16 @@ async def predict(file: UploadFile = File(...)):
         with open(absolute_file_path, "rb") as f:
             image_bytes = f.read()
 
-        # 라벨이 있으면 VLM 실행, 없으면 guide=None
-        guide = generate_recycling_guide(image_bytes, labels[0])
+        # 라벨이 있으면 VLM 실행
+        guide = None
+        if labels and len(labels) > 0:
+            try:
+                guide_result = generate_recycling_guide(image_bytes, labels[0])
+                if guide_result and guide_result.get("ok"):
+                    guide = guide_result.get("guide_markdown")  # VLM 서비스는 guide_markdown으로 반환
+            except Exception as vlm_error:
+                print(f"VLM 에러: {vlm_error}")
+                guide = None
 
         # 임시 파일 삭제
         os.remove(file_path)
@@ -118,10 +150,12 @@ async def predict(file: UploadFile = File(...)):
             }
         else:
             return {
+                "ok": False,
                 "label": "unknown",
                 "confidence": 0.0,
                 "labels": [],
                 "message": "분리수거 대상이 감지되지 않았습니다.",
+                "guide": None
             }
 
     except Exception as e:
@@ -140,4 +174,12 @@ async def predict(file: UploadFile = File(...)):
         if os.path.exists(file_path):
             os.remove(file_path)
 
-        raise HTTPException(status_code=500, detail=f"AI 모델 에러: {str(e)}")
+        # 에러 시에도 일관된 형식으로 응답
+        return {
+            "ok": False,
+            "label": "error",
+            "confidence": 0.0,
+            "labels": [],
+            "message": f"AI 모델 에러: {str(e)}",
+            "guide": None
+        }
