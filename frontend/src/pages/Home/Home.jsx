@@ -65,7 +65,8 @@ const Home = () => {
     if (payload?.guide) {
       return {
         label: label,
-        category: `${label} (${percent ?? "-"}%)`,
+        category: label,  // category에서 퍼센트 제거 (별도 표시)
+        confidence: confidence,  // confidence 필드 추가
         guide: payload.guide,
         // 기존 형식도 유지 (필요에 따라)
         disposal: [],
@@ -77,7 +78,8 @@ const Home = () => {
     // VLM 가이드가 없는 경우 기본 템플릿 사용
     const templates = {
       plastic: {
-        category: `플라스틱류 (${percent ?? "-"}%)`,
+        category: "플라스틱류",
+        confidence: confidence,
         disposal: [
           "내용물을 비우고 가볍게 헹굽니다",
           "라벨과 뚜껑을 분리합니다",
@@ -87,31 +89,36 @@ const Home = () => {
         tips: ["압착하여 부피를 줄이면 효율적입니다"],
       },
       paper: {
-        category: `종이류 (${percent ?? "-"}%)`,
+        category: "종이류",
+        confidence: confidence,
         disposal: ["이물질 제거", "박스는 펼쳐서 납작하게"],
         cautions: ["코팅지/영수증은 별도 분류"],
         tips: ["깨끗한 종이만 배출"],
       },
       glass: {
-        category: `유리병 (${percent ?? "-"}%)`,
+        category: "유리병",
+        confidence: confidence,
         disposal: ["내용물 비우고 헹굽니다", "금속 뚜껑 분리"],
         cautions: ["깨진 유리는 안전 포장 후 종량제"],
         tips: ["라벨 제거 권장"],
       },
       metal: {
-        category: `금속 캔류 (${percent ?? "-"}%)`,
+        category: "금속 캔류",
+        confidence: confidence,
         disposal: ["내용물 비우고 헹굽니다"],
         cautions: ["날카로운 모서리 주의"],
         tips: ["캔입구를 눌러 부피 줄이기"],
       },
       trash: {
-        category: `일반쓰레기 (${percent ?? "-"}%)`,
+        category: "일반쓰레기",
+        confidence: confidence,
         disposal: ["종량제 봉투 배출"],
         cautions: ["재활용 혼입 주의"],
         tips: ["가급적 재사용/감량"],
       },
       unknown: {
-        category: `이미지 분석 결과 (${percent ?? "-"}%)`,
+        category: "이미지 분석 결과",
+        confidence: confidence,
         disposal: ["내용물을 비우고, 라벨/뚜껑 분리 후 배출을 권장합니다."],
         cautions: ["오염 심한 경우 세척 후 배출"],
         tips: ["깨끗하게 헹구면 재활용 효율 향상"],
@@ -238,6 +245,7 @@ const Home = () => {
         setAnalysisResult({
           label: query,
           category: query,
+          confidence: 0,  // 텍스트 검색 시에는 confidence 0
           guide: data.guide,
           disposal: [],
           cautions: [],

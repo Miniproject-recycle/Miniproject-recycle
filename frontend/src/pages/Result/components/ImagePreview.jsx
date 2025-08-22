@@ -7,7 +7,7 @@ const ImagePreview = ({ imageUrl }) => {
         {imageUrl ? (
           <img src={imageUrl} alt="업로드된 이미지" className="preview-image" />
         ) : (
-          <div className="preview-placeholder">이미지가 여기에 표시됩니다</div>
+          <img src="/images/logo_1.png" alt="기본 로고" className="preview-image" />
         )}
       </div>
     </div>
