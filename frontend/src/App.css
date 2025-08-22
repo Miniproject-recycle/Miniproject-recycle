@@ -1081,6 +1081,19 @@
   line-height: 1.5;
 }
 
+/* 신뢰도 스코어 스타일 */
+.confidence-score {
+  display: inline-block;
+  margin-left: 12px;
+  padding: 4px 8px;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .analysis-content {
@@ -1097,5 +1110,11 @@
   
   .guide-steps {
     padding: 12px;
+  }
+  
+  .confidence-score {
+    margin-left: 8px;
+    font-size: 11px;
+    padding: 3px 6px;
   }
 }

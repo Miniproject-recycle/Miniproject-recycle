@@ -235,10 +235,13 @@ const parseVLMGuide = (guideText) => {
 const ResultSections = ({ result }) => {
   const category = result?.label || result?.category || "-";
   const guide = result?.guide;
+  const confidence = result?.confidence || 0;
   
   // 디버깅을 위한 로그
   console.log("ResultSections - result:", result);
   console.log("ResultSections - guide:", guide);
+  console.log("ResultSections - confidence:", confidence, typeof confidence);
+  console.log("ResultSections - confidence > 0:", confidence > 0);
   
   // VLM 가이드 파싱
   const { statusAnalysis, recyclingGuide } = parseVLMGuide(guide);
@@ -251,9 +254,13 @@ const ResultSections = ({ result }) => {
   return (
     <div className="result-details">
       <SectionCard title="품목 종류" icon={CategoryIcon} color="#4CAF50">
-        <div className="category-display">
-          <span className="category-badge-large">{category}</span>
-        </div>
+          <div className="category-display">
+            {confidence > 0.1 ? (
+              <span className="category-badge-large">품목 : {category} 신뢰도 : {(confidence * 100).toFixed(1)}%</span>
+            ) : (
+              <span className="category-badge-large">품목 : {category}</span>
+            )}
+          </div>
       </SectionCard>
 
 
