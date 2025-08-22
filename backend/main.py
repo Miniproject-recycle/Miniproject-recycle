@@ -50,6 +50,7 @@ async def vlm_guide_text(
     프론트가 텍스트만 보낼 때 사용.
     - 분류/탐지 없이 라벨 텍스트만으로 분리수거 가이드 생성.
     """
+
     try:
         result = generate_recycling_guide_text_only(label)
         if result.get("ok"):

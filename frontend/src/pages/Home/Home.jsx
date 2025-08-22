@@ -30,7 +30,9 @@ const Home = () => {
         const { data } = await axios.post("/predict", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
+
         console.log("이미지 분석 결과:", data);
+
         const mapped = mapBackendToUi(data);
         setAnalysisResult(mapped);
       } catch (err) {
@@ -50,6 +52,7 @@ const Home = () => {
       setImageUrl(null);
     }
   };
+
 
   // 백엔드 결과를 UI 포맷으로 매핑
   const mapBackendToUi = (payload) => {
@@ -208,6 +211,7 @@ const Home = () => {
       tips: ["깨끗하게 헹구면 재활용 효율이 향상됩니다"],
     };
   };
+
 
   const handleSearch = async (query) => {
     setIsLoading(true);
