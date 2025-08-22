@@ -62,6 +62,13 @@ def create_default_opt():
     return DefaultOpt()
 
 
+# 글로벌 모델 변수들
+_model = None
+_device = None
+_names = None
+_colors = None
+_model_initialized = False
+
 # FastAPI에서 import할 때만 기본 opt 생성
 if __name__ != "__main__":
     opt = create_default_opt()
@@ -74,18 +81,51 @@ def load_classes(path):
     return list(filter(None, names))  # filter removes empty strings (such as last line)
 
 
-def detect(save_img=False):
-    # 중복된 opt 생성 로직 제거 (71-85번째 줄 삭제)
+def initialize_model():
+    """모델을 한 번만 초기화하는 함수"""
+    global _model, _device, _names, _colors, _model_initialized
 
-    out, source, weights, view_img, save_txt, imgsz, cfg, names = (
+    if _model_initialized:
+        return
+
+    print("🔧 AI 모델 초기화 시작...")
+
+    # Device 설정
+    _device = select_device(opt.device)
+
+    # 모델 로딩
+    _model = Darknet(opt.cfg, opt.img_size).to(_device)
+    _model.load_state_dict(
+        torch.load(opt.weights[0], map_location=_device, weights_only=False)["model"]
+    )
+    _model.to(_device).eval()
+
+    # Half precision 설정
+    half = _device.type != "cpu"
+    if half:
+        _model.half()
+
+    # 클래스 이름과 색상 로딩
+    _names = load_classes(opt.names)
+    _colors = [[random.randint(0, 255) for _ in range(3)] for _ in range(len(_names))]
+
+    _model_initialized = True
+    print("✅ AI 모델 초기화 완료!")
+
+
+def detect(save_img=False):
+    # 모델 초기화 (한 번만 실행됨)
+    initialize_model()
+
+    # 글로벌 변수 사용
+    global _model, _device, _names, _colors
+
+    out, source, view_img, save_txt, imgsz = (
         opt.output,
         opt.source,  # 프론트엔드에서 업데이트된 경로 사용
-        opt.weights,
         opt.view_img,
         opt.save_txt,
         opt.img_size,
-        opt.cfg,
-        opt.names,
     )
     webcam = (
         source == "0"
@@ -95,9 +135,9 @@ def detect(save_img=False):
     )
 
     detected_labels = []
+    detected_score = []
 
-    # Initialize
-    device = select_device(opt.device)
+    # 출력 폴더 설정
     if os.path.exists(out):
         try:
             shutil.rmtree(out)  # delete output folder
@@ -105,27 +145,18 @@ def detect(save_img=False):
             print(f"Warning: 폴더 삭제 권한 없음. 기존 폴더 유지: {out}")
             pass  # 폴더 삭제 실패해도 계속 진행
     os.makedirs(out, exist_ok=True)  # make new output folder (exist_ok=True 추가)
-    half = device.type != "cpu"  # half precision only supported on CUDA
 
-    # Load model
-    model = Darknet(cfg, imgsz).to(device)
-    model.load_state_dict(
-        torch.load(weights[0], map_location=device, weights_only=False)["model"]
-    )
-    # model = attempt_load(weights, map_location=device)  # load FP32 model
-    # imgsz = check_img_size(imgsz, s=model.stride.max())  # check img_size
-    model.to(device).eval()
-    if half:
-        model.half()  # to FP16
+    # Half precision 설정
+    half = _device.type != "cpu"
 
     # Second-stage classifier
     classify = False
     if classify:
         modelc = load_classifier(name="resnet101", n=2)  # initialize
         modelc.load_state_dict(
-            torch.load("weights/resnet101.pt", map_location=device)["model"]
+            torch.load("weights/resnet101.pt", map_location=_device)["model"]
         )  # load weights
-        modelc.to(device).eval()
+        modelc.to(_device).eval()
 
     # Set Dataloader
     vid_path, vid_writer = None, None
@@ -137,16 +168,14 @@ def detect(save_img=False):
         save_img = True
         dataset = LoadImages(source, img_size=imgsz, auto_size=64)
 
-    # Get names and colors
-    names = load_classes(names)
-    colors = [[random.randint(0, 255) for _ in range(3)] for _ in range(len(names))]
-
     # Run inference
     t0 = time.time()
-    img = torch.zeros((1, 3, imgsz, imgsz), device=device)  # init img
-    _ = model(img.half() if half else img) if device.type != "cpu" else None  # run once
+    img = torch.zeros((1, 3, imgsz, imgsz), device=_device)  # init img
+    _ = (
+        _model(img.half() if half else img) if _device.type != "cpu" else None
+    )  # run once
     for path, img, im0s, vid_cap in dataset:
-        img = torch.from_numpy(img).to(device)
+        img = torch.from_numpy(img).to(_device)
         img = img.half() if half else img.float()  # uint8 to fp16/32
         img /= 255.0  # 0 - 255 to 0.0 - 1.0
         if img.ndimension() == 3:
@@ -154,7 +183,7 @@ def detect(save_img=False):
 
         # Inference
         t1 = time_synchronized()
-        pred = model(img, augment=opt.augment)[0]
+        pred = _model(img, augment=opt.augment)[0]
 
         # Apply NMS
         pred = non_max_suppression(
@@ -190,11 +219,12 @@ def detect(save_img=False):
                 # Print results
                 for c in det[:, -1].unique():
                     n = (det[:, -1] == c).sum()  # detections per class
-                    s += "%g %ss, " % (n, names[int(c)])  # add to string
+                    s += "%g %ss, " % (n, _names[int(c)])  # add to string
 
                 # Write results
                 for *xyxy, conf, cls in det:
-                    detected_labels.append(names[int(cls)])
+                    detected_labels.append(_names[int(cls)])
+                    detected_score.append(float(conf))  # tensor를 float로 변환
                     if save_txt:  # Write to file
                         xywh = (
                             (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn)
@@ -205,12 +235,12 @@ def detect(save_img=False):
                             f.write(("%g " * 5 + "\n") % (cls, *xywh))  # label format
 
                     if save_img or view_img:  # Add bbox to image
-                        label = "%s %.2f" % (names[int(cls)], conf)
+                        label = "%s %.2f" % (_names[int(cls)], conf)
                         plot_one_box(
                             xyxy,
                             im0,
                             label=label,
-                            color=colors[int(cls)],
+                            color=_colors[int(cls)],
                             line_thickness=3,
                         )
 
@@ -248,7 +278,7 @@ def detect(save_img=False):
             os.system("open " + save_path)
 
     print("Done. (%.3fs)" % (time.time() - t0))
-    return detected_labels
+    return detected_labels, detected_score
 
 
 if __name__ == "__main__":
@@ -301,9 +331,7 @@ if __name__ == "__main__":
     with torch.no_grad():
         if opt.update:  # update all models (to fix SourceChangeWarning)
             for opt.weights in [""]:
-                labels = detect()
-                print("최종 라벨 리스트:", labels)
+                labels, score = detect()
                 strip_optimizer(opt.weights)
         else:
-            labels = detect()
-            print("최종 라벨 리스트:", labels)
+            labels, score = detect()
