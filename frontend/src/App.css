@@ -909,3 +909,110 @@
   max-width: 80px;
   object-fit: contain;
 }
+
+/* VLM 결과 표시 스타일 */
+.analysis-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.analysis-item {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.analysis-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2196F3;
+  margin: 0 0 8px 0;
+}
+
+.analysis-text {
+  font-size: 14px;
+  color: #495057;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* 분리수거 가이드 스타일 */
+.guide-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.guide-section {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.guide-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.guide-section-title.possible {
+  background-color: #d4edda;
+  color: #155724;
+  border-bottom-color: #c3e6cb;
+}
+
+.guide-section-title.difficult {
+  background-color: #fff3cd;
+  color: #856404;
+  border-bottom-color: #ffeaa7;
+}
+
+.guide-steps {
+  padding: 16px;
+  background-color: #ffffff;
+}
+
+.guide-step {
+  margin-bottom: 16px;
+}
+
+.guide-step:last-child {
+  margin-bottom: 0;
+}
+
+.step-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #343a40;
+  margin: 0 0 6px 0;
+}
+
+.step-content {
+  font-size: 14px;
+  color: #6c757d;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .analysis-content {
+    gap: 12px;
+  }
+  
+  .analysis-item {
+    padding: 10px 12px;
+  }
+  
+  .guide-content {
+    gap: 16px;
+  }
+  
+  .guide-steps {
+    padding: 12px;
+  }
+}

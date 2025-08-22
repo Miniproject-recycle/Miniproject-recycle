@@ -30,7 +30,7 @@ const Home = () => {
         const { data } = await axios.post("/predict", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-        // 더미 응답 예: { label: "plastic", confidence: 0.92 }
+        console.log("이미지 분석 결과:", data);
         const mapped = mapBackendToUi(data);
         setAnalysisResult(mapped);
       } catch (err) {
@@ -51,13 +51,27 @@ const Home = () => {
     }
   };
 
-  // 백엔드 결과를 기존 UI 포맷으로 매핑
+  // 백엔드 결과를 UI 포맷으로 매핑
   const mapBackendToUi = (payload) => {
-    const label = (payload?.label || "unknown").toLowerCase();
+    const label = payload?.label || "unknown";
     const confidence = payload?.confidence;
     const percent =
       typeof confidence === "number" ? Math.round(confidence * 100) : undefined;
+    
+    // VLM 가이드가 있으면 그대로 전달하고, 없으면 기본 템플릿 사용
+    if (payload?.guide) {
+      return {
+        label: label,
+        category: `${label} (${percent ?? "-"}%)`,
+        guide: payload.guide,
+        // 기존 형식도 유지 (필요에 따라)
+        disposal: [],
+        cautions: [],
+        tips: []
+      };
+    }
 
+    // VLM 가이드가 없는 경우 기본 템플릿 사용
     const templates = {
       plastic: {
         category: `플라스틱류 (${percent ?? "-"}%)`,
@@ -101,7 +115,8 @@ const Home = () => {
       },
     };
 
-    return templates[label] || templates.unknown;
+    const normalizedLabel = label.toLowerCase();
+    return templates[normalizedLabel] || templates.unknown;
   };
 
   const simulateAnalysis = (queryText) => {
@@ -194,16 +209,53 @@ const Home = () => {
     };
   };
 
-  const handleSearch = (query) => {
+  const handleSearch = async (query) => {
     setIsLoading(true);
     setAnalysisResult(null);
 
-    setTimeout(() => {
+    try {
+      console.log("텍스트 검색 시작:", query);
+      
+      // 텍스트 검색은 VLM API 호출
+      const formData = new FormData();
+      formData.append("label", query);
+      
+      const response = await axios.post("/vlm/guide-text", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      
+      console.log("VLM API 전체 응답:", response);
+      console.log("VLM API 응답 데이터:", response.data);
+      
+      const data = response.data;
+      
+      if (data?.ok && data.guide) {
+        console.log("VLM API 성공, 가이드 설정:", data.guide);
+        setAnalysisResult({
+          label: query,
+          category: query,
+          guide: data.guide,
+          disposal: [],
+          cautions: [],
+          tips: []
+        });
+      } else {
+        // VLM API 실패 또는 가이드 없음
+        console.log("VLM API 실패 또는 가이드 없음:", data);
+        console.log("기본 템플릿 사용");
+        const result = simulateAnalysis(query);
+        setAnalysisResult(result);
+      }
+    } catch (error) {
+      console.error("텍스트 검색 에러:", error);
+      console.error("에러 상세:", error.response?.data);
+      // 에러 시 기본 템플릿 사용
       const result = simulateAnalysis(query);
       setAnalysisResult(result);
+    } finally {
       setIsLoading(false);
       setIsResultOpen(true);
-    }, 600);
+    }
   };
 
   return (
