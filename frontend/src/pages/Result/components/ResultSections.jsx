@@ -256,7 +256,11 @@ const ResultSections = ({ result }) => {
       <SectionCard title="품목 종류" icon={CategoryIcon} color="#4CAF50">
           <div className="category-display">
             {confidence > 0.1 ? (
-              <span className="category-badge-large">품목 : {category} 신뢰도 : {(confidence * 100).toFixed(1)}%</span>
+              <div>
+                <span className="category-badge-large">품목 : {category} </span>
+                &nbsp;&nbsp;
+                <span className="category-badge-large">신뢰도 : {(confidence * 100).toFixed(1)}%</span>
+              </div>
             ) : (
               <span className="category-badge-large">품목 : {category}</span>
             )}
