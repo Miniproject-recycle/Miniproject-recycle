@@ -46,6 +46,7 @@ const PlaceholderList = ({ message = "검색 후 결과가 표시됩니다." }) 
   </div>
 );
 
+
 // 마크다운 텍스트를 정리하는 함수
 const cleanMarkdownText = (text) => {
   if (!text) return text;
@@ -246,6 +247,7 @@ const ResultSections = ({ result }) => {
   console.log("statusAnalysis:", statusAnalysis);
   console.log("recyclingGuide:", recyclingGuide);
 
+
   return (
     <div className="result-details">
       <SectionCard title="품목 종류" icon={CategoryIcon} color="#4CAF50">
@@ -253,6 +255,7 @@ const ResultSections = ({ result }) => {
           <span className="category-badge-large">{category}</span>
         </div>
       </SectionCard>
+
 
       <SectionCard title="상태 분석" icon={CategoryIcon} color="#2196F3">
         {statusAnalysis.length > 0 ? (
@@ -274,6 +277,7 @@ const ResultSections = ({ result }) => {
           </div>
         ) : (
           <PlaceholderList message="상태 분석 결과를 확인해보세요" />
+
         )}
       </SectionCard>
 
