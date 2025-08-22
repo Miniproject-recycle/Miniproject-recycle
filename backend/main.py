@@ -11,12 +11,18 @@ from fastapi.middleware.cors import CORSMiddleware
 import shutil
 
 # 탐지: 이미지
-from ai_part.DetectionModel.detect import detect
+from ai_part.DetectionModel.detect import detect, initialize_model
+
 # VLM: 이미지+라벨 / 텍스트만 두 가지 유틸
 from ai_part.vlm_model.vlm_service import (
-    generate_recycling_guide,          # 이미지 + 라벨
-    generate_recycling_guide_text_only # 텍스트만
+    generate_recycling_guide,  # 이미지 + 라벨
+    generate_recycling_guide_text_only,  # 텍스트만
 )
+
+# 서버 시작 시 모델 미리 로딩
+print("🚀 서버 시작 - AI 모델 로딩 중...")
+initialize_model()
+print("✅ 서버 준비 완료!")
 
 # from ai_part.VlmModel.vlm import run_vlm   # VLM 처리 함수
 
@@ -24,7 +30,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],        # 배포 시 특정 도메인만 허용 권장
+    allow_origins=["*"],  # 배포 시 특정 도메인만 허용 권장
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -77,16 +83,17 @@ async def predict(file: UploadFile = File(...)):
         print("실제 AI 모델 호출 시작...")
 
         try:
-            labels = detect()  # 실제 AI 모델 호출
-            print(f"실제 AI 모델 결과: {labels}")
+            labels, scores = detect()  # 실제 AI 모델 호출 - 라벨과 스코어 둘 다 받기
+            print(f"실제 AI 모델 결과 - 라벨: {labels}")
+            print(f"실제 AI 모델 결과 - 스코어: {scores}")
         except Exception as e:
             print(f"AI 모델 에러: {e}")
             import traceback
 
             traceback.print_exc()
             labels = ["unknown"]  # 에러 시 기본값
+            scores = [0.0]  # 에러 시 기본값
 
-        print(f"detect 모델 결과 : {labels}")
         # 파일 바이트로 읽어서 전달
         with open(absolute_file_path, "rb") as f:
             image_bytes = f.read()
@@ -102,11 +109,12 @@ async def predict(file: UploadFile = File(...)):
             return {
                 "ok": True,
                 "label": labels[0],  # 첫 번째 감지된 객체
-                "confidence": 0.85,  # 임시 신뢰도
+                "confidence": scores[0] if scores else 0.0,  # 실제 신뢰도 스코어
                 "labels": labels,  # 전체 감지된 객체들
+                "scores": scores,  # 전체 신뢰도 스코어들
                 "total_detected": len(labels),
                 "message": f"{len(labels)}개의 객체가 감지되었습니다.",
-                "guide": guide
+                "guide": guide,
             }
         else:
             return {
@@ -115,7 +123,6 @@ async def predict(file: UploadFile = File(...)):
                 "labels": [],
                 "message": "분리수거 대상이 감지되지 않았습니다.",
             }
-
 
     except Exception as e:
         print(f"❌ AI 모델 에러 발생!")
@@ -132,8 +139,5 @@ async def predict(file: UploadFile = File(...)):
         # 임시 파일 정리
         if os.path.exists(file_path):
             os.remove(file_path)
-
-
-    
 
         raise HTTPException(status_code=500, detail=f"AI 모델 에러: {str(e)}")

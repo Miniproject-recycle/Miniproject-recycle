@@ -25,3 +25,5 @@ fastapi
 google-generativeai
 python-multipart
 python-dotenv
+
+#pip install -r requirements.txt
